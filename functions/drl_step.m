@@ -35,22 +35,18 @@ function [next_state, reward, done, env] = drl_step(env, action, para)
 
     % Sensing power fraction -> mapped to [0.05, 0.35]
     sensing_frac = 0.05 + 0.30 * (action(K+1) + 1) / 2;
-
-    %% Zero-Forcing beamforming (eliminates inter-user interference)
+    %% Maximum Ratio Transmission (MRT) Beamforming for NOMA
     total_comm_power = (1 - sensing_frac) * para.Pt;
     power_alloc = power_raw / sum(power_raw) * total_comm_power;
 
-    % ZF precoder: W = H * (H'*H)^{-1}  ensures h_k' * w_j = 0 for j ~= k
-    HH_gram = H' * H;   % [K x K]
-    W_zf = H * ((HH_gram + 1e-8 * eye(K)) \ eye(K));  % [N x K], regularized inverse
-
-    % Normalize ZF directions and apply power allocation
+    % MRT maximizes array gain. The interference caused by spatial 
+    % correlation (due to the RIS) will be handled by the NOMA SIC block below.
     f = zeros(N, K);
     for k = 1:K
-        wk = W_zf(:,k);
+        wk = H(:,k);  % MRT simply matches the user's effective channel
         f(:,k) = sqrt(power_alloc(k)) * wk / norm(wk);
     end
-
+    
     %% Construct transmit covariance matrix Rx = f*f' + sensing component
     sensing_power = sensing_frac * para.Pt;
     a_s = beamfocusing(para, para.r_s, para.theta_s);
