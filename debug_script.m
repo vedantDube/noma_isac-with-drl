@@ -1,0 +1,14 @@
+addpath('./functions');
+para = para_init();
+[H, G, beta_s, ~] = generate_channel(para);
+options.max_episodes = 2;
+options.num_episodes = 2;
+options.warmup_steps = 5;
+options.batch_size = 16;
+disp('Starting TD3...');
+[~, ~, ~, td3_reward] = TD3_optimize(para, H, beta_s, options);
+disp('TD3 done. Starting PPO...');
+[~, ~, ~, ppo_reward] = PPO_optimize(para, H, beta_s, options);
+disp('PPO done. Starting DDPG...');
+[~, ~, ~, ddpg_reward] = DDPG_optimize(para, H, beta_s, options);
+disp('Done!');

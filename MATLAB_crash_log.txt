@@ -1,0 +1,19 @@
+ 
+To get started, type doc.
+For product information, visit www.mathworks.com.
+ 
+=== TD3 Training ===
+Episodes: 20 | State dim: 7 | Action dim: 5
+Hidden: 256 | Batch: 16 | Buffer: 100000
+
+Episode  20/20 | Reward:  -154.06 | Best CRB: 0.000269
+
+Final evaluation on clean channel...
+DRL Final CRB Trace: 0.000269
+Unrecognized function or variable 'step_count'.
+
+Error in PPO_optimize (line 67)
+        step_count = step_count + 1;
+
+Error in compare_algorithms (line 12)
+[~, ~, ~, ppo_reward] = PPO_optimize(para, H, beta_s, options);
